@@ -1,18 +1,17 @@
 package routes
 
 import (
-	"net/http"
-
+	"github.com/Thomika1/TestOrga/controllers"
+	"github.com/Thomika1/TestOrga/usecase"
 	"github.com/gin-gonic/gin"
 )
 
 func InitializeRoutes(router *gin.Engine) {
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	UserUseCase := usecase.NewUserUsecase()
+	userController := controllers.NewUserController(UserUseCase)
+
+	router.GET("/getUser", userController.GetUser)
 
 	router.POST("/register", func(c *gin.Context) {
 
