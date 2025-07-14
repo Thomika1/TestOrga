@@ -14,6 +14,6 @@ func NewUserUsecase(repo repository.UserRepository) UserUsecase {
 }
 
 func (pu *UserUsecase) GetUsers() ([]model.User, error) {
-	return []model.User{}, nil
+	return pu.repository.GetUsers()
 
 }
