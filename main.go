@@ -11,11 +11,12 @@ func main() {
 	r := gin.Default()
 
 	dbConnection, err := database.ConnectDB()
+
 	if err != nil {
 		panic(err)
 	}
 
-	routes.InitializeRoutes(r)
+	routes.InitializeRoutes(r, dbConnection)
 
 	r.Run(":8080")
 
