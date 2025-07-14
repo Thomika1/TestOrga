@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Thomika1/TestOrga/model"
 	"github.com/Thomika1/TestOrga/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -18,14 +17,10 @@ func NewUserController(usecase usecase.UserUsecase) userController {
 	}
 }
 
-func (p *userController) GetUser(ctx *gin.Context) {
-	user := []model.User{
-		{
-			ID:           1,
-			Email:        "thomazmbonfim@gmail.com",
-			PasswordHash: "penislongo",
-			CreatedAt:    "10-07-2025",
-		},
+func (u *userController) GetUsers(ctx *gin.Context) {
+	users, err := u.userUsecase.GetUsers()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
 	}
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, users)
 }
