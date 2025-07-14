@@ -1,17 +1,21 @@
 package routes
 
 import (
+	"database/sql"
+
 	"github.com/Thomika1/TestOrga/controllers"
+	"github.com/Thomika1/TestOrga/repository"
 	"github.com/Thomika1/TestOrga/usecase"
 	"github.com/gin-gonic/gin"
 )
 
-func InitializeRoutes(router *gin.Engine) {
+func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 
-	UserUseCase := usecase.NewUserUsecase()
+	userRepository := repository.NewUserRepository(db)
+	UserUseCase := usecase.NewUserUsecase(userRepository)
 	userController := controllers.NewUserController(UserUseCase)
 
-	router.GET("/getUser", userController.GetUser)
+	router.GET("/getUsers", userController.GetUsers)
 
 	router.POST("/register", func(c *gin.Context) {
 
