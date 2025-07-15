@@ -46,3 +46,23 @@ func (ur *UserRepository) GetUsers() ([]model.User, error) {
 	return userList, err
 
 }
+
+func (ur *UserRepository) CreateUser(user model.User) (int, error) {
+	var id int
+
+	query, err := ur.connection.Prepare("INSERT INTO users(email, password_hash) VALUES($1,$2) RETURNING id")
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	err = query.QueryRow(user.Email, user.PasswordHash).Scan(&id)
+
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	query.Close()
+	return id, nil
+}
