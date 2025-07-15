@@ -14,7 +14,6 @@ func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 	userRepository := repository.NewUserRepository(db)
 	UserUseCase := usecase.NewUserUsecase(userRepository)
 	userController := controllers.NewUserController(UserUseCase)
-
 	router.GET("/getUsers", userController.GetUsers)
 
 	router.POST("/register", func(c *gin.Context) {
