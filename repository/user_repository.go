@@ -66,3 +66,24 @@ func (ur *UserRepository) CreateUser(user model.User) (int, error) {
 	query.Close()
 	return id, nil
 }
+
+func (ur *UserRepository) GetUserByEmail(user_email string) (*model.User, error) {
+	query, err := ur.connection.Prepare("SELECT id, email, created_at FROM users WHERE email = $1")
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	var user_selected model.User
+
+	err = query.QueryRow(user_email).Scan(&user_selected.ID, &user_selected.Email, &user_selected.CreatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("No user found" + err.Error())
+			return nil, nil
+		}
+		return nil, err
+	}
+	query.Close()
+	return &user_selected, nil
+}

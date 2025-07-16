@@ -15,11 +15,14 @@ func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 	UserUseCase := usecase.NewUserUsecase(userRepository)
 	userController := controllers.NewUserController(UserUseCase)
 
-	// listar users
+	// Get user list
 	router.GET("/getUsers", userController.GetUsers)
 
-	// registrar ususario
+	// Register user
 	router.POST("/register", userController.CreateUser)
+
+	// Get user by Email
+	router.GET("/GetById/:email", userController.GetUserByEmail)
 
 	router.POST("/login", func(c *gin.Context) {
 

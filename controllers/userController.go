@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Thomika1/TestOrga/model"
@@ -62,4 +63,33 @@ func (u *userController) CreateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, err)
 	}
 	ctx.JSON(http.StatusCreated, userResponse)
+}
+
+func (u *userController) GetUserByEmail(ctx *gin.Context) {
+
+	email := ctx.Param("email")
+	if email == "" {
+		response := model.Response{
+			Message: "Email must exist",
+		}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	fmt.Println("###antes")
+	user, err := u.userUsecase.GetUserById(email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		fmt.Println("###dentro")
+		return
+	}
+	fmt.Println("###depois")
+
+	if user == nil {
+		response := model.Response{
+			Message: "User not found",
+		}
+		ctx.JSON(http.StatusNotFound, response)
+	}
+
+	ctx.JSON(http.StatusOK, user)
 }

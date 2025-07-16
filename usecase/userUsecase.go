@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/Thomika1/TestOrga/model"
 	"github.com/Thomika1/TestOrga/repository"
 )
@@ -27,4 +29,15 @@ func (pu *UserUsecase) CreateUser(user model.User) (model.User, error) {
 	user.ID = userId
 
 	return user, nil
+}
+
+func (pu *UserUsecase) GetUserById(user_email string) (*model.User, error) {
+	user, err := pu.repository.GetUserByEmail(user_email)
+	if err != nil {
+		fmt.Println("###dentrousecase")
+		return nil, err
+	}
+
+	return user, nil
+
 }
