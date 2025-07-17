@@ -24,9 +24,7 @@ func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 	// Get user by Email
 	router.GET("/GetById/:email", userController.GetUserByEmail)
 
-	router.POST("/login", func(c *gin.Context) {
-
-	})
+	router.POST("/login", userController.UserLogin)
 
 	router.POST("/exam", func(c *gin.Context) {
 

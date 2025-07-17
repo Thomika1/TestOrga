@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Thomika1/TestOrga/model"
@@ -48,11 +47,6 @@ func (u *userController) CreateUser(ctx *gin.Context) {
 	//salva a senha encriptada no campo de user
 	user.PasswordHash = password
 
-	//func CheckPasswordHash(password, hash string) bool {
-	//err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	//return err == nil
-	//}
-
 	insertedUser, err := u.userUsecase.CreateUser(user)
 	userResponse := model.UserResponse{
 		ID:    insertedUser.ID,
@@ -75,14 +69,13 @@ func (u *userController) GetUserByEmail(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	fmt.Println("###antes")
+
 	user, err := u.userUsecase.GetUserById(email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
-		fmt.Println("###dentro")
+
 		return
 	}
-	fmt.Println("###depois")
 
 	if user == nil {
 		response := model.Response{
@@ -92,4 +85,25 @@ func (u *userController) GetUserByEmail(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, user)
+}
+
+func (u *userController) UserLogin(ctx *gin.Context) {
+	var req model.LoginRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Format"})
+		return
+	}
+
+	token, err := u.userUsecase.UserLogin(req.Email, req.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Login realizado com sucesso",
+		"token":   token,
+	})
+
 }
