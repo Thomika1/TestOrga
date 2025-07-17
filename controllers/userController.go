@@ -72,7 +72,7 @@ func (u *userController) GetUserByEmail(ctx *gin.Context) {
 
 	user, err := u.userUsecase.GetUserById(email)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 
 		return
 	}
