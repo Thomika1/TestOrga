@@ -71,7 +71,6 @@ func (pu *UserUsecase) UserLogin(user_email string, plain_password string) (stri
 
 	err = bcrypt.CompareHashAndPassword([]byte(password_hash), []byte(plain_password))
 	if err != nil {
-		fmt.Println("USECASEERRO")
 		return "", fmt.Errorf("senha incorreta")
 	}
 
