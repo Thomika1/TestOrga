@@ -97,7 +97,7 @@ func (u *userController) UserLogin(ctx *gin.Context) {
 
 	token, err := u.userUsecase.UserLogin(req.Email, req.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.JSON(http.StatusUnauthorized, err)
 		return
 	}
 

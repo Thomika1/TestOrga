@@ -10,26 +10,28 @@ import (
 )
 
 func InitializeRoutes(router *gin.Engine, db *sql.DB) {
-
+	// User
 	userRepository := repository.NewUserRepository(db)
-	UserUseCase := usecase.NewUserUsecase(userRepository)
-	userController := controllers.NewUserController(UserUseCase)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	userController := controllers.NewUserController(userUsecase)
+	userRoutes := router.Group("/users")
+	{
+		userRoutes.GET("/", userController.GetUsers)             // GET /users/
+		userRoutes.POST("/register", userController.CreateUser)  // POST /users/register
+		userRoutes.GET("/:email", userController.GetUserByEmail) // GET /users/:email
+		userRoutes.POST("/login", userController.UserLogin)      // POST /users/login
+	}
 
-	// Get user list
-	router.GET("/getUsers", userController.GetUsers)
+	// Exam
+	examRepository := repository.NewExamRepository(db)
+	examUseCase := usecase.NewExamUsecase(examRepository)
+	examController := controllers.NewExamController(examUseCase)
+	examRoutes := router.Group("/exam")
+	{
+		examRoutes.POST("/insert", examController.RegisterExam)
+	}
 
-	// Register user
-	router.POST("/register", userController.CreateUser)
-
-	// Get user by Email
-	router.GET("/GetById/:email", userController.GetUserByEmail)
-
-	router.POST("/login", userController.UserLogin)
-
-	router.POST("/exam", func(c *gin.Context) {
-
-	})
-
+	// studyPlan
 	router.GET("/exams", func(c *gin.Context) {
 
 	})
