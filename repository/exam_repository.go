@@ -34,3 +34,39 @@ func (er *ExamRepository) RegisterExam(exam model.Exam) (int, string, error) {
 	return id, date, nil
 
 }
+
+func (er *ExamRepository) GetsExams(user_id int) ([]model.Exam, error) {
+	query, err := er.connection.Prepare("SELECT * FROM exams where user_id=$1")
+	if err != nil {
+		fmt.Println(err)
+		return []model.Exam{}, err
+	}
+
+	rows, err := query.Query(user_id)
+	if err != nil {
+		fmt.Println(err)
+		return []model.Exam{}, err
+	}
+
+	var examList []model.Exam
+	var examObj model.Exam
+
+	for rows.Next() {
+		err = rows.Scan(
+			&examObj.ID,
+			&examObj.UserID,
+			&examObj.Subject,
+			&examObj.ExamDate,
+			&examObj.CreatedAt,
+			&examObj.Topics,
+		)
+		if err != nil {
+			fmt.Println(err)
+			return []model.Exam{}, err
+		}
+		examList = append(examList, examObj)
+	}
+
+	query.Close()
+	return examList, nil
+}
