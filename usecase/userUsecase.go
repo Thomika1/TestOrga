@@ -24,7 +24,7 @@ func (pu *UserUsecase) GetUsers() ([]model.User, error) {
 
 }
 
-func GenerateJWT(email string) (string, error) {
+func GenerateJWT(email string, user_id int) (string, error) {
 	// Pega a secret da variável de ambiente
 	secret := os.Getenv("jwtSecret")
 	if secret == "" {
@@ -33,8 +33,9 @@ func GenerateJWT(email string) (string, error) {
 
 	// Define os dados do token
 	claims := jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(24 * time.Hour).Unix(),
+		"email":   email,
+		"user_id": user_id,
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	}
 
 	// Cria e assina o token
@@ -64,7 +65,7 @@ func (pu *UserUsecase) GetUserById(user_email string) (*model.User, error) {
 }
 
 func (pu *UserUsecase) UserLogin(user_email string, plain_password string) (string, error) {
-	password_hash, err := pu.repository.UserLogin(user_email, plain_password)
+	password_hash, user_id, err := pu.repository.UserLogin(user_email, plain_password)
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +75,7 @@ func (pu *UserUsecase) UserLogin(user_email string, plain_password string) (stri
 		return "", fmt.Errorf("senha incorreta")
 	}
 
-	token, err := GenerateJWT(user_email)
+	token, err := GenerateJWT(user_email, user_id)
 	if err != nil {
 		return "", err
 	}

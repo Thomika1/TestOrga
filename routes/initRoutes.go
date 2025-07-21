@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/Thomika1/TestOrga/controllers"
+	"github.com/Thomika1/TestOrga/middleware"
 	"github.com/Thomika1/TestOrga/repository"
 	"github.com/Thomika1/TestOrga/usecase"
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,7 @@ func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 	examController := controllers.NewExamController(examUseCase)
 	examRoutes := router.Group("/exam")
 	{
+		examRoutes.Use(middleware.MiddlewareJWT())
 		examRoutes.POST("/insert", examController.RegisterExam)
 	}
 

@@ -88,21 +88,22 @@ func (ur *UserRepository) GetUserByEmail(user_email string) (*model.User, error)
 	return &user_selected, nil
 }
 
-func (ur *UserRepository) UserLogin(user_email string, plain_password string) (string, error) {
-	query, err := ur.connection.Prepare("SELECT password_hash FROM users WHERE email = $1")
+func (ur *UserRepository) UserLogin(user_email string, plain_password string) (string, int, error) {
+	query, err := ur.connection.Prepare("SELECT password_hash, id FROM users WHERE email = $1")
 	if err != nil {
 		fmt.Println(err)
-		return "", err
+		return "", 0, err
 	}
 
 	var password_hash string
-	err = query.QueryRow(user_email).Scan(&password_hash)
+	var user_id int
+	err = query.QueryRow(user_email).Scan(&password_hash, &user_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("No user found" + err.Error())
 		}
-		return "", err
+		return "", 0, err
 	}
 	query.Close()
-	return password_hash, nil
+	return password_hash, user_id, nil
 }
