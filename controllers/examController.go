@@ -27,6 +27,14 @@ func (e *examController) RegisterExam(ctx *gin.Context) {
 		return
 	}
 
+	user_id, exists := ctx.Get("user_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+
+	exam.UserID = user_id.(int)
+
 	insertedExam, err := e.examUsecase.RegisterExam(exam)
 	var examResponse = model.ExamResponse{
 		ID:        insertedExam.ID,
