@@ -31,6 +31,7 @@ func InitializeRoutes(router *gin.Engine, db *sql.DB) {
 	{
 		examRoutes.Use(middleware.MiddlewareJWT())
 		examRoutes.POST("/insert", examController.RegisterExam)
+		examRoutes.GET("/getexams", examController.GetExams)
 	}
 
 	// studyPlan
