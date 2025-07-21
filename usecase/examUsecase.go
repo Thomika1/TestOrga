@@ -28,3 +28,13 @@ func (eu *ExamUsecase) RegisterExam(exam model.Exam) (model.Exam, error) {
 	return exam, nil
 
 }
+
+func (eu *ExamUsecase) GetExams(user_id int) ([]model.Exam, error) {
+	exam, err := eu.repository.GetsExams(user_id)
+	if err != nil {
+		fmt.Println(err)
+		return []model.Exam{}, err
+	}
+
+	return exam, nil
+}
