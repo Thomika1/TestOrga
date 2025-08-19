@@ -38,3 +38,13 @@ func (eu *ExamUsecase) GetExams(user_id int) ([]model.Exam, error) {
 
 	return exam, nil
 }
+
+func (eu *ExamUsecase) UpdateExam(user_id int, newExam model.Exam) (model.Exam, error) {
+
+	exam, err := eu.repository.UpdateExam(user_id, newExam)
+	if err != nil {
+		return model.Exam{}, err
+	}
+
+	return exam, nil
+}

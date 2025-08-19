@@ -70,3 +70,21 @@ func (er *ExamRepository) GetsExams(user_id int) ([]model.Exam, error) {
 	query.Close()
 	return examList, nil
 }
+
+func (er *ExamRepository) UpdateExam(user_id int, newExam model.Exam) (model.Exam, error) {
+	var exam model.Exam
+
+	query, err := er.connection.Prepare("UPDATE exams SET subject=$1, exam_date=$2, topics=$3 WHERE user_id=$4 AND id=$5")
+	if err != nil {
+		fmt.Println(err)
+		return model.Exam{}, err
+	}
+
+	_, err = query.Exec(exam.Subject, exam.ExamDate, exam.Topics, exam.UserID, exam.ID)
+	if err != nil {
+		fmt.Println(err)
+		return model.Exam{}, err
+	}
+
+	return exam, nil
+}

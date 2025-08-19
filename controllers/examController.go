@@ -54,7 +54,7 @@ func (e *examController) RegisterExam(ctx *gin.Context) {
 func (e *examController) GetExams(ctx *gin.Context) {
 	user_id, exists := ctx.Get("user_id")
 	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "usuário não autenticado"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
@@ -62,5 +62,27 @@ func (e *examController) GetExams(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "Exams selected", "exams": exams})
+	ctx.JSON(http.StatusAccepted, gin.H{"message": "Exams selected", "exams": exams})
+}
+
+func (e *examController) UpdateExam(ctx *gin.Context) {
+	var newExam model.Exam
+
+	user_id, exists := ctx.Get("user_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	err := ctx.BindJSON(&newExam)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error: could not bind json"})
+		return
+	}
+
+	exam, err := e.examUsecase.UpdateExam(user_id.(int), newExam)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server error"})
+	}
+	ctx.JSON(http.StatusAccepted, gin.H{"message": "Exam updated", "exam": exam})
 }
